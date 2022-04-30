@@ -7,7 +7,17 @@
 
 import SwiftUI
 
-struct ContentView: View {
+class MeowViewModel: ObservableObject {
+    
+}
+
+struct MeowView: View {
+    @ObservedObject var viewModel: MeowViewModel
+    
+    init(with viewModel: MeowViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         Text("Hello, world!")
             .padding()
@@ -15,7 +25,9 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
+    static let viewModel = MeowViewModel()
+
     static var previews: some View {
-        ContentView()
+        MeowView(with: viewModel)
     }
 }
