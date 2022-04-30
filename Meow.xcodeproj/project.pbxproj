@@ -14,6 +14,7 @@
 		B9607756281DF33300F14B92 /* MeowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9607755281DF33300F14B92 /* MeowTests.swift */; };
 		B9607760281DF33300F14B92 /* MeowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B960775F281DF33300F14B92 /* MeowUITests.swift */; };
 		B9607762281DF33300F14B92 /* MeowUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9607761281DF33300F14B92 /* MeowUITestsLaunchTests.swift */; };
+		B960776F281DFCCD00F14B92 /* MeowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B960776E281DFCCD00F14B92 /* MeowViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		B960775B281DF33300F14B92 /* MeowUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeowUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B960775F281DF33300F14B92 /* MeowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeowUITests.swift; sourceTree = "<group>"; };
 		B9607761281DF33300F14B92 /* MeowUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeowUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B960776E281DFCCD00F14B92 /* MeowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeowViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 			children = (
 				B9607744281DF32F00F14B92 /* MeowApp.swift */,
 				B9607746281DF32F00F14B92 /* MeowView.swift */,
+				B960776E281DFCCD00F14B92 /* MeowViewModel.swift */,
 				B9607748281DF33200F14B92 /* Assets.xcassets */,
 				B960774A281DF33200F14B92 /* Preview Content */,
 			);
@@ -258,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9607747281DF32F00F14B92 /* MeowView.swift in Sources */,
+				B960776F281DFCCD00F14B92 /* MeowViewModel.swift in Sources */,
 				B9607745281DF32F00F14B92 /* MeowApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

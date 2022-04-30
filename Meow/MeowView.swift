@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-class MeowViewModel: ObservableObject {
-    func displayImage() {
-        print("pressed")
-    }
-}
-
 struct MeowView: View {
     @ObservedObject var viewModel: MeowViewModel
     
