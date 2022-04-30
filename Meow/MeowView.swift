@@ -8,7 +8,9 @@
 import SwiftUI
 
 class MeowViewModel: ObservableObject {
-    
+    func displayImage() {
+        print("pressed")
+    }
 }
 
 struct MeowView: View {
@@ -19,7 +21,7 @@ struct MeowView: View {
     }
 
     var body: some View {
-        Text("Hello, world!")
+        Button("Meow", action: viewModel.displayImage)
             .padding()
     }
 }
