@@ -7,6 +7,7 @@
 
 import Foundation
 import PhotosUI
+import Vision
 
 class MeowViewModel: ObservableObject {
     @Published var image: UIImage?
@@ -44,17 +45,31 @@ class MeowViewModel: ObservableObject {
 //        }
         let fetchOptions = PHFetchOptions()
         let assets = PHAsset.fetchAssets(with: fetchOptions)
-        let assetIndex = Int.random(in: 0..<assets.count)
-        let asset = assets.object(at: assetIndex)
-        PHImageManager.default().requestImage(for: asset,
-                                                 targetSize: CGSize(width: 150, height: 100),
-                                                 contentMode: .aspectFit,
-                                                 options: .none) { image, metadata in
-            DispatchQueue.main.async {
-                self.image = image
+        var catImages: [UIImage] = []
+        
+        assets.enumerateObjects { asset, index, pointer in
+            PHImageManager.default().requestImage(for: asset,
+                                                     targetSize: CGSize(width: 450, height: 300),
+                                                     contentMode: .aspectFit,
+                                                     options: .none) { image, metadata in
+                guard let image = image,
+                        let cgImage = image.cgImage else { return }
+
+                let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+                let request = VNRecognizeAnimalsRequest()
+                try? requestHandler.perform([request])
+                
+                guard let results = request.results, results.contains(where: { $0.labels.count > 0 }) else { return }
+                catImages.append(image)
+
+//                let request = VNClassifyImageRequest()
+//                try? requestHandler.perform([request])
             }
         }
         
+        DispatchQueue.main.async {
+            self.image = catImages.randomElement()
+        }
     }
     
     func getPhotoPermissions(with handler: @escaping (Bool) -> Void) {
