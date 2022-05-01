@@ -17,11 +17,16 @@ struct MeowView: View {
     var body: some View {
         ZStack {
             if viewModel.shouldShowProgressView {
-                ProgressView("Hang Tight! Cats are coming soon...")
+                ProgressView(value: viewModel.progress) {
+                    Text("Hang Tight! Finding cats...")
+                        .padding()
+                }
+                .padding()
             } else {
                 VStack {
                     if let image = viewModel.image {
                         Image(uiImage: image)
+                            .padding()
                     }
 
                     Button("Meow", action: viewModel.meowPressed)

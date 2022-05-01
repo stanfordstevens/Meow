@@ -10,10 +10,13 @@ import PhotosUI
 import Vision
 
 class MeowViewModel: ObservableObject {
-    @Published var image: UIImage?
-    @Published var shouldShowProgressView = true
+    static let catLowerBound = 10
     
-    private var catImages: [UIImage] = []
+    @Published var image: UIImage?
+    @Published var catImages: [UIImage] = []
+    
+    var progress: Double { Double(catImages.count) / Double(MeowViewModel.catLowerBound) }
+    var shouldShowProgressView: Bool { catImages.count < MeowViewModel.catLowerBound }
     
     func meowPressed() {
         displayImage()
@@ -26,36 +29,41 @@ class MeowViewModel: ObservableObject {
             self.fetchImages()
         }
     }
-
+    
     func displayImage() {
         self.image = catImages.randomElement()
     }
     
     func fetchImages() {
+        guard shouldShowProgressView else { return }
+
         let fetchOptions = PHFetchOptions()
         let assets = PHAsset.fetchAssets(with: fetchOptions)
-        catImages = []
-        
+        let targetSize = CGSize(width: UIScreen.main.bounds.size.width,
+                                height: UIScreen.main.bounds.size.height / 2)
+
         assets.enumerateObjects { asset, index, pointer in
             PHImageManager.default().requestImage(for: asset,
-                                                     targetSize: CGSize(width: 450, height: 300),
-                                                     contentMode: .aspectFit,
+                                                     targetSize: targetSize,
+                                                     contentMode: .aspectFill,
                                                      options: .none) { image, metadata in
                 guard let image = image,
-                        let cgImage = image.cgImage else { return }
-
+                      let cgImage = image.cgImage else { return }
+                
                 let requestHandler = VNImageRequestHandler(cgImage: cgImage)
                 let request = VNRecognizeAnimalsRequest()
                 try? requestHandler.perform([request])
-                print("---------Image Processed----------")
-
-                guard let results = request.results, results.contains(where: { $0.labels.count > 0 }) else { return }
-
-                self.catImages.append(image)
-                DispatchQueue.main.async {
-                    self.shouldShowProgressView = false
+                
+                guard let results = request.results else { return }
+                
+                for result in results where result.confidence > 0.8 {
+                    let animals = result.labels
+                    for animal in animals where animal.identifier == "Cat" {
+                        DispatchQueue.main.async {
+                            self.catImages.append(image)
+                        }
+                    }
                 }
-                print("---------ANIMAL FOUND----------")
             }
         }
     }
@@ -65,7 +73,7 @@ class MeowViewModel: ObservableObject {
             handler(true)
             return
         }
-
+        
         PHPhotoLibrary.requestAuthorization { status in
             handler(status == .authorized)
         }
