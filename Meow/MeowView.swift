@@ -15,8 +15,14 @@ struct MeowView: View {
     }
 
     var body: some View {
-        Button("Meow", action: viewModel.displayImage)
-            .padding()
+        VStack {
+            if let image = viewModel.image {
+                Image(uiImage: image)
+            }
+
+            Button("Meow", action: viewModel.displayImage)
+                .padding()
+        }
     }
 }
 
