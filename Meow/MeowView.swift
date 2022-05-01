@@ -17,7 +17,7 @@ struct MeowView: View {
     var body: some View {
         ZStack {
             if viewModel.shouldShowProgressView {
-                ProgressView(value: viewModel.progress)
+                ProgressView("Hang Tight! Cats are coming soon...")
             } else {
                 VStack {
                     if let image = viewModel.image {

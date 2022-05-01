@@ -11,8 +11,7 @@ import Vision
 
 class MeowViewModel: ObservableObject {
     @Published var image: UIImage?
-    @Published var progress = 0.0
-    var shouldShowProgressView: Bool { progress < 1 }
+    @Published var shouldShowProgressView = true
     
     private var catImages: [UIImage] = []
     
@@ -35,13 +34,9 @@ class MeowViewModel: ObservableObject {
     func fetchImages() {
         let fetchOptions = PHFetchOptions()
         let assets = PHAsset.fetchAssets(with: fetchOptions)
-        let totalAssets = Double(assets.count)
         catImages = []
         
         assets.enumerateObjects { asset, index, pointer in
-            DispatchQueue.main.async {
-                self.progress = Double(index + 1) / totalAssets
-            }
             PHImageManager.default().requestImage(for: asset,
                                                      targetSize: CGSize(width: 450, height: 300),
                                                      contentMode: .aspectFit,
@@ -57,6 +52,9 @@ class MeowViewModel: ObservableObject {
                 guard let results = request.results, results.contains(where: { $0.labels.count > 0 }) else { return }
 
                 self.catImages.append(image)
+                DispatchQueue.main.async {
+                    self.shouldShowProgressView = false
+                }
                 print("---------ANIMAL FOUND----------")
             }
         }
