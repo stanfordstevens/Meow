@@ -44,7 +44,8 @@ class MeowViewModel: ObservableObject {
 //        }
         let fetchOptions = PHFetchOptions()
         let assets = PHAsset.fetchAssets(with: fetchOptions)
-        guard let asset = assets.firstObject else { return }
+        let assetIndex = Int.random(in: 0..<assets.count)
+        let asset = assets.object(at: assetIndex)
         PHImageManager.default().requestImage(for: asset,
                                                  targetSize: CGSize(width: 150, height: 100),
                                                  contentMode: .aspectFit,
