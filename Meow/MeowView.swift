@@ -15,14 +15,21 @@ struct MeowView: View {
     }
 
     var body: some View {
-        VStack {
-            if let image = viewModel.image {
-                Image(uiImage: image)
-            }
+        ZStack {
+            if viewModel.shouldShowProgressView {
+                ProgressView(value: viewModel.progress)
+            } else {
+                VStack {
+                    if let image = viewModel.image {
+                        Image(uiImage: image)
+                    }
 
-            Button("Meow", action: viewModel.displayImage)
-                .padding()
+                    Button("Meow", action: viewModel.meowPressed)
+                        .padding()
+                }
+            }
         }
+        .onAppear(perform: viewModel.viewAppeared)
     }
 }
 

@@ -11,43 +11,35 @@ import Vision
 
 class MeowViewModel: ObservableObject {
     @Published var image: UIImage?
-
-    func displayImage() {
+    @Published var progress = 0.0
+    var shouldShowProgressView: Bool { progress < 1 }
+    
+    private var catImages: [UIImage] = []
+    
+    func meowPressed() {
+        displayImage()
+    }
+    
+    func viewAppeared() {
         getPhotoPermissions { [weak self] accessGranted in
             guard let self = self,
                   accessGranted else { return }
             self.fetchImages()
         }
     }
+
+    func displayImage() {
+        self.image = catImages.randomElement()
+    }
     
     func fetchImages() {
-//        let fetchOptions = PHFetchOptions()
-//        let fetchResult = PHAsset.fetchAssets(with: fetchOptions)
-//        fetchResult.enumerateObjects { asset, index, pointer in
-//            self.assetManager.requestImage(for: asset,
-//                                           targetSize: CGSize(width: 150, height: 100),
-//                                           contentMode: .aspectFit,
-//                                           options: .none) { image, metadata in
-//                    if let uiImage = image, let cgImage = uiImage.cgImage {
-//                        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-//                        let request = VNClassifyImageRequest()
-//                        try? requestHandler.perform([request])
-//                        let results = request.results as! [VNClassificationObservation]
-//                        // Filter the 1303 classification results, and use them in your app
-//                        // in my case, fullfill promise with a wrapper object
-//                        promise(.success(ClassifiedImage(imageIdentifier: asset.localIdentifier,
-//                                        classifications: results.filter { $0.hasMinimumPrecision(0.9, forRecall: 0.0) }.map{
-//                                            ($0.identifier, nil)
-//                                            })))
-//                    }
-//
-//                }
-//        }
         let fetchOptions = PHFetchOptions()
         let assets = PHAsset.fetchAssets(with: fetchOptions)
-        var catImages: [UIImage] = []
+        let totalAssets = Double(assets.count)
+        catImages = []
         
         assets.enumerateObjects { asset, index, pointer in
+            self.progress = Double(index + 1) / totalAssets
             PHImageManager.default().requestImage(for: asset,
                                                      targetSize: CGSize(width: 450, height: 300),
                                                      contentMode: .aspectFit,
@@ -58,17 +50,13 @@ class MeowViewModel: ObservableObject {
                 let requestHandler = VNImageRequestHandler(cgImage: cgImage)
                 let request = VNRecognizeAnimalsRequest()
                 try? requestHandler.perform([request])
-                
-                guard let results = request.results, results.contains(where: { $0.labels.count > 0 }) else { return }
-                catImages.append(image)
+                print("---------Image Processed----------")
 
-//                let request = VNClassifyImageRequest()
-//                try? requestHandler.perform([request])
+                guard let results = request.results, results.contains(where: { $0.labels.count > 0 }) else { return }
+
+                self.catImages.append(image)
+                print("---------ANIMAL FOUND----------")
             }
-        }
-        
-        DispatchQueue.main.async {
-            self.image = catImages.randomElement()
         }
     }
     
