@@ -39,7 +39,9 @@ class MeowViewModel: ObservableObject {
         catImages = []
         
         assets.enumerateObjects { asset, index, pointer in
-            self.progress = Double(index + 1) / totalAssets
+            DispatchQueue.main.async {
+                self.progress = Double(index + 1) / totalAssets
+            }
             PHImageManager.default().requestImage(for: asset,
                                                      targetSize: CGSize(width: 450, height: 300),
                                                      contentMode: .aspectFit,
